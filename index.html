@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نفیس فود</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:#f5f7f8;color:#222}
+header{background:#087f5b;color:white;padding:18px 5%;position:sticky;top:0;z-index:20}
+.top{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.logo{font-size:27px;font-weight:bold}
+.phone{background:white;color:#087f5b;padding:9px 14px;border-radius:10px;font-weight:bold}
+.container{max-width:1250px;margin:auto;padding:20px}
+.hero{background:linear-gradient(135deg,#087f5b,#12a875);color:#fff;border-radius:20px;padding:30px;margin-bottom:20px}
+.hero h1{margin-top:0}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+input,select,button{font-family:inherit}
+.search{padding:12px;border:1px solid #ddd;border-radius:10px;flex:1;min-width:220px}
+select{padding:12px;border:1px solid #ddd;border-radius:10px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 5px 20px #00000012}
+.card h3{margin:0 0 8px}
+.category{color:#777;font-size:13px}
+.price{font-size:19px;font-weight:bold;color:#087f5b;margin:12px 0}
+.old{text-decoration:line-through;color:#999;font-size:13px;margin-left:7px}
+.discount{background:#e63946;color:#fff;border-radius:7px;padding:4px 7px;font-size:12px}
+.controls{display:flex;align-items:center;gap:7px;margin:10px 0}
+.controls button{width:38px;height:38px;border:0;border-radius:9px;background:#087f5b;color:#fff;font-size:20px;cursor:pointer}
+.weight{flex:1;text-align:center;font-weight:bold;background:#f1f3f5;padding:10px;border-radius:9px}
+.add{width:100%;padding:12px;border:0;border-radius:10px;background:#087f5b;color:#fff;cursor:pointer;font-weight:bold}
+.add:disabled{background:#aaa;cursor:not-allowed}
+.out{background:#eee!important;color:#777!important}
+.cart{position:fixed;left:20px;bottom:20px;background:#087f5b;color:white;padding:14px 20px;border:0;border-radius:50px;box-shadow:0 5px 20px #0004;cursor:pointer;font-weight:bold;z-index:30}
+.cartbox{position:fixed;inset:0;background:#0008;display:none;z-index:50}
+.cartpanel{background:#fff;width:min(600px,94%);max-height:90vh;overflow:auto;margin:5vh auto;padding:22px;border-radius:20px}
+.cartitem{border-bottom:1px solid #ddd;padding:12px 0}
+.close{float:left;border:0;background:#ddd;padding:8px 12px;border-radius:8px;cursor:pointer}
+.checkout{background:#f8f9fa;padding:15px;border-radius:12px;margin-top:15px}
+.checkout input,.checkout select{width:100%;margin:6px 0;padding:11px}
+.pay{width:100%;padding:14px;border:0;border-radius:10px;background:#087f5b;color:white;font-weight:bold;cursor:pointer}
+.empty{text-align:center;padding:30px;color:#777}
+.notice{padding:12px;background:#fff3cd;border-radius:10px;margin:10px 0}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="top">
+<div class="logo">🥩 نفیس فود</div>
+<div class="phone">شماره فروشنده: ۰۹۳۶۴۴۴۷۷۰۱</div>
+</div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+<h1>فروشگاه نفیس فود</h1>
+<p>انواع سوسیس، ژامبون و کالباس با امکان انتخاب وزن دلخواه</p>
+</section>
+
+<div class="tools">
+<input id="search" class="search" placeholder="جستجوی محصول...">
+<select id="category">
+<option value="all">همه محصولات</option>
+<option value="سوسیس">سوسیس</option>
+<option value="ژامبون">ژامبون</option>
+<option value="کالباس">کالباس</option>
+</select>
+</div>
+
+<div id="products" class="products"></div>
+
+</div>
+
+<button class="cart" onclick="openCart()">🛒 سبد خرید (<span id="cartCount">0</span>)</button>
+
+<div id="cartbox" class="cartbox">
+<div class="cartpanel">
+<button class="close" onclick="closeCart()">بستن</button>
+<h2>🛒 سبد خرید</h2>
+
+<div id="cartItems"></div>
+
+<div id="checkout" class="checkout">
+
+<h3>اطلاعات سفارش</h3>
+
+<input id="customerName" placeholder="نام و نام خانوادگی">
+
+<input id="customerPhone" placeholder="شماره تماس">
+
+<select id="delivery">
+<option value="pickup">تحویل حضوری</option>
+<option value="courier">ارسال با پیک</option>
+</select>
+
+<div id="addressBox" style="display:none">
+<input id="address" placeholder="آدرس کامل">
+</div>
+
+<div class="notice">
+تحویل حضوری: مراجعه به آدرس اعلام‌شده توسط فروشنده
+<br>
+هزینه پیک در صورت انتخاب ارسال با پیک توسط فروشنده تعیین می‌شود.
+</div>
+
+<select id="payment">
+<option value="online">پرداخت آنلاین</option>
+<option value="card">کارت به کارت</option>
+</select>
+
+<button class="pay" onclick="submitOrder()">ثبت سفارش</button>
+
+</div>
+</div>
+</div>
+
+<script>
+const API="https://nafis-food-server.nafis-food123.workers.dev/api";
+
+const PRODUCTS=[
+{id:1,name:"سوسیس آلمانی",category:"سوسیس",price:550000,min:500},
+{id:2,name:"کراکف پنیری",category:"سوسیس",price:730000,min:500},
+{id:3,name:"سوسیس بلغاری",category:"سوسیس",price:650000,min:500},
+{id:4,name:"سوسیس هات داگ پنیری",category:"سوسیس",price:680000,min:500},
+{id:5,name:"سوسیس سوجوک",category:"سوسیس",price:1200000,min:500},
+{id:6,name:"سوسیس چورسیتو",category:"سوسیس",price:1200000,min:500},
+{id:7,name:"ژامبون مرغ",category:"ژامبون",price:390000,min:300},
+{id:8,name:"ژامبون مرغ و قارچ",category:"ژامبون",price:420000,min:300},
+{id:9,name:"ژامبون خشک",category:"ژامبون",price:450000,min:300},
+{id:10,name:"ژامبون گوشت",category:"ژامبون",price:650000,min:300},
+{id:11,name:"ژامبون بوقلمون",category:"ژامبون",price:420000,min:300},
+{id:12,name:"ژامبون لبرکزه اتریشی",category:"ژامبون",price:650000,min:300},
+{id:13,name:"ژامبون سبزیجات",category:"ژامبون",price:400000,min:300},
+{id:14,name:"کالباس سالامی",category:"کالباس",price:700000,min:300},
+{id:15,name:"کالباس پپرونی",category:"کالباس",price:700000,min:300},
+{id:16,name:"کالباس مارتادلا",category:"کالباس",price:310000,min:300}
+];
+
+let products=PRODUCTS.map(x=>({...x,discount:0,active:true,inStock:true}));
+let cart=[];
+
+const money=n=>Number(n).toLocaleString("fa-IR")+" تومان";
+
+function finalPrice(p){
+return Math.round(p.price*(100-(p.discount||0))/100);
+}
+
+function render(){
+const box=document.getElementById("products");
+const search=document.getElementById("search").value.trim().toLowerCase();
+const cat=document.getElementById("category").value;
+
+const list=products.filter(p=>{
+return (!search||p.name.toLowerCase().includes(search))
+&&(cat==="all"||p.category===cat);
+});
+
+box.innerHTML=list.map(p=>{
+const isDisabled=!p.active||!p.inStock;
+const price=finalPrice(p);
+
+return `
+<div class="card ${isDisabled?'out':''}">
+<h3>${p.name}</h3>
+<div class="category">${p.category}</div>
+
+<div class="price">
+${p.discount>0?`<span class="old">${money(p.price)}</span>
+<span>${money(price)}</span>
+<span class="discount">${p.discount}% تخفیف</span>`
+:`${money(price)}`}
+</div>
+
+<div>قیمت بر اساس هر کیلوگرم</div>
+
+<div class="controls">
+<button ${isDisabled?'disabled':''} onclick="changeWeight(${p.id},-100)">−</button>
+<div class="weight" id="weight-${p.id}">${p.min} گرم</div>
+<button ${isDisabled?'disabled':''} onclick="changeWeight(${p.id},100)">+</button>
+</div>
+
+<div class="controls">
+<button ${isDisabled?'disabled':''} onclick="changeQty(${p.id},-1)">−</button>
+<div class="weight" id="qty-${p.id}">1 عدد</div>
+<button ${isDisabled?'disabled':''} onclick="changeQty(${p.id},1)">+</button>
+</div>
+
+<button class="add" ${isDisabled?'disabled':''} onclick="addToCart(${p.id})">
+${isDisabled?"ناموجود":"افزودن به سبد خرید"}
+</button>
+
+</div>`;
+}).join("");
+
+if(!list.length)box.innerHTML='<div class="empty">محصولی پیدا نشد.</div>';
+}
+
+function getWeight(id){
+const el=document.getElementById("weight-"+id);
+return parseInt(el.dataset.weight||el.textContent);
+}
+
+function changeWeight(id,delta){
+const p=products.find(x=>x.id===id);
+const el=document.getElementById("weight-"+id);
+let w=parseInt(el.dataset.weight||p.min);
+w+=delta;
+w=Math.max(p.min,w);
+w=Math.min(6000,w);
+w=Math.round(w/100)*100;
+el.dataset.weight=w;
+el.textContent=w>=1000?(w/1000)+" کیلوگرم":w+" گرم";
+}
+
+function changeQty(id,delta){
+const el=document.getElementById("qty-"+id);
+let q=parseInt(el.dataset.qty||1);
+q=Math.max(1,q+delta);
+el.dataset.qty=q;
+el.textContent=q+" عدد";
+}
+
+function addToCart(id){
+const p=products.find(x=>x.id===id);
+if(!p||!p.active||!p.inStock)return;
+
+const weight=getWeight(id);
+const qty=parseInt(document.getElementById("qty-"+id).dataset.qty||1);
+
+const existing=cart.find(x=>x.id===id&&x.weight===weight);
+
+if(existing)existing.qty+=qty;
+else cart.push({id,weight,qty});
+
+updateCart();
+alert("محصول به سبد خرید اضافه شد.");
+}
+
+function updateCart(){
+document.getElementById("cartCount").textContent=
+cart.reduce((a,b)=>a+b.qty,0);
+
+const box=document.getElementById("cartItems");
+
+if(!cart.length){
+box.innerHTML='<div class="empty">سبد خرید خالی است.</div>';
+return;
+}
+
+let total=0;
+
+box.innerHTML=cart.map((item,i)=>{
+const p=products.find(x=>x.id===item.id);
+const unit=finalPrice(p);
+const subtotal=unit*(item.weight/1000)*item.qty;
+total+=subtotal;
+
+return `
+<div class="cartitem">
+<b>${p.name}</b>
+<br>
+وزن: ${item.weight>=1000?item.weight/1000+" کیلوگرم":item.weight+" گرم"}
+<br>
+تعداد: ${item.qty}
+<br>
+مبلغ: ${money(subtotal)}
+<div class="controls">
+<button onclick="cartWeight(${i},-100)">−</button>
+<div class="weight">تغییر وزن</div>
+<button onclick="cartWeight(${i},100)">+</button>
+<button onclick="removeCart(${i})">حذف</button>
+</div>
+</div>`;
+}).join("");
+
+box.innerHTML+=`
+<hr>
+<h3>جمع کالاها: ${money(total)}</h3>
+`;
+}
+
+function cartWeight(i,d){
+const item=cart[i];
+const p=products.find(x=>x.id===item.id);
+item.weight=Math.max(p.min,Math.min(6000,item.weight+d));
+item.weight=Math.round(item.weight/100)*100;
+updateCart();
+}
+
+function removeCart(i){
+cart.splice(i,1);
+updateCart();
+}
+
+function openCart(){
+document.getElementById("cartbox").style.display="block";
+updateCart();
+}
+
+function closeCart(){
+document.getElementById("cartbox").style.display="none";
+}
+
+document.getElementById("delivery").addEventListener("change",function(){
+document.getElementById("addressBox").style.display=
+this.value==="courier"?"block":"none";
+});
+
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("category").addEventListener("change",render);
+
+async function loadProducts(){
+try{
+const r=await fetch(API+"/products");
+if(!r.ok)return;
+
+const data=await r.json();
+
+if(data.ok&&Array.isArray(data.products)){
+data.products.forEach(server=>{
+const local=products.find(p=>p.id===server.id);
+if(!local)return;
+
+if(server.name) local.name=server.name;
+if(server.category) local.category=server.category;
+if(server.price!=null) local.price=Number(server.price);
+if(server.discount!=null) local.discount=Number(server.discount);
+if(server.active!=null) local.active=Boolean(server.active);
+
+if(server.stock!=null)
+local.inStock=Number(server.stock)>0;
+
+if(server.in_stock!=null)
+local.inStock=Boolean(server.in_stock);
+
+if(server.stock_enabled!=null)
+local.inStock=Boolean(server.stock_enabled)&&local.inStock;
+});
+render();
+}
+}catch(e){
+console.log("API unavailable; using local products.",e);
+}
+}
+
+async function submitOrder(){
+
+if(!cart.length){
+alert("سبد خرید خالی است.");
+return;
+}
+
+const name=document.getElementById("customerName").value.trim();
+const phone=document.getElementById("customerPhone").value.trim();
+const delivery=document.getElementById("delivery").value;
+const address=document.getElementById("address").value.trim();
+const payment=document.getElementById("payment").value;
+
+if(!name||!phone){
+alert("نام و شماره تماس را وارد کنید.");
+return;
+}
+
+if(delivery==="courier"&&!address){
+alert("آدرس را وارد کنید.");
+return;
+}
+
+const items=cart.map(x=>({
+product_id:x.id,
+weight:x.weight,
+quantity:x.qty
+}));
+
+try{
+
+const response=await fetch(API+"/order/create",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+customer_name:name,
+customer_phone:phone,
+delivery_method:delivery,
+address:address,
+payment_method:payment,
+items
+})
+});
+
+const data=await response.json();
+
+if(!data.ok){
+alert(data.message||"ثبت سفارش انجام نشد.");
+return;
+}
+
+if(payment==="online"&&data.payment_url){
+location.href=data.payment_url;
+return;
+}
+
+alert("سفارش با موفقیت ثبت شد.\nکد سفارش: "+data.order_id);
+
+cart=[];
+updateCart();
+closeCart();
+
+}catch(e){
+alert("خطا در ارتباط با سرور.\nلطفاً دوباره تلاش کنید.");
+console.error(e);
+}
+}
+
+render();
+loadProducts();
+</script>
+
+</body>
+</html>

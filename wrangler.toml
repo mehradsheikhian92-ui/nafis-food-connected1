@@ -1,0 +1,9 @@
+name = "nafis-food-server"
+main = "worker.js"
+compatibility_date = "2026-09-03"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nafis-food-db"
+database_id = "8bf5b022-bff9-41bb-a7e9-bc75d3b686cc"
+
